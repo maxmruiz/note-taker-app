@@ -3,6 +3,7 @@ let noteText;
 let saveNoteBtn;
 let newNoteBtn;
 let noteList;
+let clearNoteBtn;
 
 if (window.location.pathname === '/notes') {
   noteTitle = document.querySelector('.note-title');
@@ -10,6 +11,8 @@ if (window.location.pathname === '/notes') {
   saveNoteBtn = document.querySelector('.save-note');
   newNoteBtn = document.querySelector('.new-note');
   noteList = document.querySelectorAll('.list-container .list-group');
+  clearNoteBtn = document.querySelector('.clear-note');
+  clearNoteBtn.addEventListener('click', handleClearForm);
 }
 
 // Show an element
@@ -115,6 +118,14 @@ const handleRenderSaveBtn = () => {
     show(saveNoteBtn);
   }
 };
+
+const handleClearForm = () => {
+  noteTitle.value = '';
+  noteText.value = '';
+  hide(saveNoteBtn);
+};
+
+
 
 // Render the list of note titles
 const renderNoteList = async (notes) => {
