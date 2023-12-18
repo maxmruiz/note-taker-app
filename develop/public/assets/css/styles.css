@@ -5,7 +5,7 @@ body {
   padding: 0;
 }
 
-.save-note {
+.save-note, .clear-note {
   display: none;
 }
 
