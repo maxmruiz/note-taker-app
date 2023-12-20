@@ -36,6 +36,13 @@ const saveNote = (note) => fetch('/api/notes', {
     body: JSON.stringify(note),
 });
 
+// Function to delete a note from the server
+const deleteNote = (id) => fetch(`/api/notes/${id}`, {
+    method: 'DELETE',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
 // Function to render the active note in the UI
 const renderActiveNote = () => {
     if (activeNote.id) {
@@ -55,14 +62,30 @@ const renderActiveNote = () => {
     }
 };
 
+// Function to handle note selection
+const handleNoteClick = (e) => {
+    e.preventDefault();
+    if (e.target.matches('.list-group-item')) {
+        activeNote = JSON.parse(e.target.getAttribute('data-note'));
+        renderActiveNote();
+    } else if (e.target.matches('.delete-note')) {
+        const noteId = e.target.parentNode.getAttribute('data-note-id');
+        deleteNote(noteId).then(() => {
+            getAndRenderNotes();
+        });
+    }
+};
+
 // Function to handle saving of a new note
 const handleNoteSave = () => {
     const newNote = {
         title: noteTitle.value,
         text: noteText.value,
+        id: activeNote ? activeNote.id : undefined, // If activeNote has an id, it's an update
     };
     saveNote(newNote).then(() => {
         getAndRenderNotes();
+        activeNote = null;
         renderActiveNote();
     });
 };
@@ -97,43 +120,35 @@ const handleClearForm = () => {
     hide(clearNoteBtn);
 };
 
+// Function to create a list item for each note
+const createNoteListItem = (note) => {
+    const liEl = document.createElement('li');
+    liEl.classList.add('list-group-item');
+    liEl.innerText = note.title;
+    liEl.setAttribute('data-note', JSON.stringify(note));
+    liEl.addEventListener('click', handleNoteClick);
+
+    const delBtnEl = document.createElement('i');
+    delBtnEl.classList.add('fas', 'fa-trash-alt', 'delete-note');
+    delBtnEl.setAttribute('data-note-id', note.id);
+    liEl.appendChild(delBtnEl);
+
+    return liEl;
+};
+
 // Function to render the list of notes in the UI
-const renderNoteList = async (notes) => {
-    let jsonNotes = await notes.json();
+const renderNoteList = (notes) => {
     noteList.innerHTML = '';
-
-    let noteListItems = [];
-
-    // Function to create a list item for each note
-    const createLi = (text, delBtn = true) => {
-        const liEl = document.createElement('li');
-        liEl.classList.add('list-group-item');
-
-        const spanEl = document.createElement('span');
-        spanEl.classList.add('list-item-title');
-        spanEl.innerText = text;
-        spanEl.addEventListener('click', handleNoteView);
-
-        liEl.append(spanEl);
-
-        return liEl;
-    };
-
-    if (jsonNotes.length === 0) {
-        noteListItems.push(createLi('No saved Notes', false));
-    }
-
-    jsonNotes.forEach((note) => {
-        const li = createLi(note.title);
-        li.dataset.note = JSON.stringify(note);
-        noteListItems.push(li);
+    notes.forEach((note) => {
+        const noteListItem = createNoteListItem(note);
+        noteList.appendChild(noteListItem);
     });
-
-    noteListItems.forEach((note) => noteList.append(note));
 };
 
 // Function to get notes and render them
-const getAndRenderNotes = () => getNotes().then(renderNoteList);
+const getAndRenderNotes = () => {
+    getNotes().then(response => response.json()).then(renderNoteList);
+};
 
 // Add event listeners if on the notes page
 saveNoteBtn.addEventListener('click', handleNoteSave);
