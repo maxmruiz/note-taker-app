@@ -1,20 +1,10 @@
-// Define variables to store DOM elements
-let noteTitle;
-let noteText;
-let saveNoteBtn;
-let newNoteBtn;
-let clearNoteBtn;
-let noteList;
-
 // Initialize elements if on the notes page
-if (window.location.pathname === '/notes') {
-    noteTitle = document.querySelector('.note-title');
-    noteText = document.querySelector('.note-textarea');
-    saveNoteBtn = document.querySelector('.save-note');
-    newNoteBtn = document.querySelector('.new-note');
-    clearNoteBtn = document.querySelector('.clear-note');
-    noteList = document.querySelector('.list-container .list-group');
-}
+let noteTitle = document.querySelector('.note-title');
+let noteText = document.querySelector('.note-textarea');
+let saveNoteBtn = document.querySelector('.save-note');
+let newNoteBtn = document.querySelector('.new-note');
+let clearNoteBtn = document.querySelector('.clear-note');
+let noteList = document.querySelector('.list-container .list-group');
 
 // Function to show an element
 const show = (elem) => {
@@ -110,9 +100,7 @@ const handleClearForm = () => {
 // Function to render the list of notes in the UI
 const renderNoteList = async (notes) => {
     let jsonNotes = await notes.json();
-    if (window.location.pathname === '/notes') {
-        noteList.innerHTML = '';
-    }
+    noteList.innerHTML = '';
 
     let noteListItems = [];
 
@@ -128,10 +116,6 @@ const renderNoteList = async (notes) => {
 
         liEl.append(spanEl);
 
-        if (delBtn) {
-            // ... delete button creation code
-        }
-
         return liEl;
     };
 
@@ -145,22 +129,18 @@ const renderNoteList = async (notes) => {
         noteListItems.push(li);
     });
 
-    if (window.location.pathname === '/notes') {
-        noteListItems.forEach((note) => noteList.append(note));
-    }
+    noteListItems.forEach((note) => noteList.append(note));
 };
 
 // Function to get notes and render them
 const getAndRenderNotes = () => getNotes().then(renderNoteList);
 
 // Add event listeners if on the notes page
-if (window.location.pathname === '/notes') {
-    saveNoteBtn.addEventListener('click', handleNoteSave);
-    newNoteBtn.addEventListener('click', handleNewNoteView);
-    clearNoteBtn.addEventListener('click', handleClearForm);
-    noteTitle.addEventListener('keyup', handleRenderSaveBtn);
-    noteText.addEventListener('keyup', handleRenderSaveBtn);
-}
+saveNoteBtn.addEventListener('click', handleNoteSave);
+newNoteBtn.addEventListener('click', handleNewNoteView);
+clearNoteBtn.addEventListener('click', handleClearForm);
+noteTitle.addEventListener('keyup', handleRenderSaveBtn);
+noteText.addEventListener('keyup', handleRenderSaveBtn);
 
 // Initial call to get and render notes
 getAndRenderNotes();
