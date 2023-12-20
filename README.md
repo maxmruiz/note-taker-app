@@ -73,4 +73,4 @@ After starting the server, you can use the application as follows:
 
 ## Deployment
 
-If you would like visit the deployed page, visit [here]().
+If you would like visit the deployed page, visit [here](https://note-taker-app111-6119111576f6.herokuapp.com/notes.html).
