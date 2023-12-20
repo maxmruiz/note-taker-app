@@ -46,18 +46,16 @@ const deleteNote = (id) => fetch(`/api/notes/${id}`, {
 
 // Function to render the active note in the UI
 const renderActiveNote = () => {
-    hide(clearNoteBtn);
     if (activeNote.id) {
-        noteTitle.setAttribute('readonly', true);
-        noteText.setAttribute('readonly', true);
         noteTitle.value = activeNote.title;
         noteText.value = activeNote.text;
     } else {
-        noteTitle.removeAttribute('readonly');
-        noteText.removeAttribute('readonly');
         noteTitle.value = '';
         noteText.value = '';
     }
+    noteTitle.removeAttribute('readonly');
+    noteText.removeAttribute('readonly');
+    show(clearNoteBtn);
     handleRenderSaveBtn();
 };
 
