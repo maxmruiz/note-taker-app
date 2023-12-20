@@ -99,6 +99,21 @@ const handleRenderSaveBtn = () => {
     }
 };
 
+// Function to handle note selection
+const handleNoteClick = (e) => {
+    e.preventDefault();
+    const selectedElement = e.target;
+    if (selectedElement.matches('.list-item-title')) {
+        activeNote = JSON.parse(selectedElement.closest('.list-group-item').getAttribute('data-note'));
+        renderActiveNote();
+    } else if (selectedElement.matches('.delete-note')) {
+        const noteId = selectedElement.closest('.list-group-item').getAttribute('data-note-id');
+        deleteNote(noteId).then(() => {
+            getAndRenderNotes();
+        });
+    }
+};
+
 // Function to handle the creation of a new note view
 const handleNewNoteView = () => {
     activeNote = {};
@@ -155,8 +170,14 @@ const getAndRenderNotes = () => {
 };
 
 // Event listeners
-noteTitle.addEventListener('input', handleRenderSaveBtn);
-noteText.addEventListener('input', handleRenderSaveBtn);
+noteTitle.addEventListener('input', () => {
+    show(clearNoteBtn);
+    handleRenderSaveBtn();
+});
+noteText.addEventListener('input', () => {
+    show(clearNoteBtn);
+    handleRenderSaveBtn();
+});
 saveNoteBtn.addEventListener('click', handleNoteSave);
 clearNoteBtn.addEventListener('click', handleClearForm);
 newNoteBtn.addEventListener('click', handleNewNoteView);
